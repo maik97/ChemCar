@@ -31,7 +31,6 @@ def torque_acceleration_from_distance_and_time(distance, time, radius, mass):
 
 
 def motor_requirements(
-        self,
         max_distance,
         max_time,
         buffer,
