@@ -85,7 +85,7 @@ class ChemCarModel:
     def step(self, dt, motor_moment, prev_car_velocity):
         car_acc = self.acceleration_function(motor_moment, prev_car_velocity)
         axis_moment = 2 * self.back_wheel_inertia_torque * car_acc / self.back_wheel_radius
-        axis_moment = np.clip(axis_moment, 0, self.max_axis_moment)
+        #axis_moment = np.clip(axis_moment, 0, self.max_axis_moment)
         car_acc = axis_moment / (2 * self.back_wheel_inertia_torque) * self.back_wheel_radius
         car_velocity = prev_car_velocity + car_acc * dt
 
