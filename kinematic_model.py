@@ -47,15 +47,16 @@ class ChemCarModel:
 
         acc_devision = (
             car_mass * (k + 1) * (
-                alpha + (1 - alpha) / (
-                    (1 - np.tan(beta) * roll_friction) + 2 * back_wheel_inertia_torque / np.power(back_wheel_radius, 2)
+                alpha
+                + (1 - alpha) / (1 - np.tan(beta) * roll_friction)
+                + 2 * back_wheel_inertia_torque / np.power(back_wheel_radius, 2)
                 )
             )
-        )
 
         self.acc_func_factor = (translation / back_wheel_radius) / acc_devision
 
-        self.acc_func_air_factor = - 0.5 * (1 + (1 / (1 - np.tan(beta) * roll_friction))) * A_res_Luft
+        self.acc_func_air_factor = (- 0.5 * (1 + (1 / (1 - np.tan(beta) * roll_friction))) * A_res_Luft) / acc_devision
+
 
         self.acc_func_rest = ((
             - (front_axis_mass * constants.g * roll_friction) / (1 - np.tan(beta) * roll_friction)
@@ -85,7 +86,7 @@ class ChemCarModel:
     def step(self, dt, motor_moment, prev_car_velocity):
         car_acc = self.acceleration_function(motor_moment, prev_car_velocity)
         axis_moment = 2 * self.back_wheel_inertia_torque * car_acc / self.back_wheel_radius
-        #axis_moment = np.clip(axis_moment, 0, self.max_axis_moment)
+        axis_moment = np.clip(axis_moment, 0, self.max_axis_moment)
         car_acc = axis_moment / (2 * self.back_wheel_inertia_torque) * self.back_wheel_radius
         car_velocity = prev_car_velocity + car_acc * dt
 
