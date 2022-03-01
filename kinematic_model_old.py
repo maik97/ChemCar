@@ -8,22 +8,22 @@ class ChemCarModel:
 
     def __init__(
             self,
-            car_mass_total=10,
-            alpha=0.5,
-            additional_mass_factor=0.3,
-            back_wheel_radius=0.1,
-            back_wheel_mass=0.5,
-            front_wheel_radius=0.1,
-            front_wheel_mass=None,
-            wheelbase=0.465,
-            back_axis_mass_dist=0.5,
-            roll_friction=0.01,
-            translation=1,
+            car_mass_total: float = 20,
+            alpha = 0.5,
+            additional_mass_factor: float = 0.3,
+            back_wheel_radius: float = 0.1,
+            back_wheel_mass: float = 0.5,
+            front_wheel_radius: float = 0.07,
+            front_wheel_mass: float = None,
+            wheelbase: float = 0.465,
+            back_axis_mass_dist: float = 0.5,
+            roll_friction: float = 0.01,
+            translation:float = 3,
             cw=0.3,
             car_surface=0.1,
             rho_air=1.1839,
             k=3,
-            max_axis_moment=9999,
+            max_axis_moment=0.2,
             motor_moment=0.3,
             motor_rpm=55,
     ) -> None:
@@ -68,7 +68,7 @@ class ChemCarModel:
         self.motor_moment = motor_moment
         self.max_axis_moment = max_axis_moment
         self.max_car_velocity = back_wheel_radius * 2 * np.pi * motor_rpm / 60 / translation
-        #print(self.max_car_velocity)
+        print(self.max_car_velocity)
 
         self.back_wheel_inertia_torque = back_wheel_inertia_torque
         self.back_wheel_radius = back_wheel_radius
@@ -113,7 +113,7 @@ class ChemCarModel:
         car_velocity = 0.0
         while self.values['car_distance'][-1] < distance:
             axis_moment, car_acc, car_velocity = self.step(dt, self.motor_moment, car_velocity)
-            #print(axis_moment, car_acc, car_velocity)
+            print(axis_moment, car_acc, car_velocity)
             self.log_values(axis_moment, car_acc, car_velocity, dt)
 
         return self.values
@@ -132,48 +132,44 @@ def plot_results(val_dict):
 
 
 def time_from_dist(dist, val_dict, k=1):
-    bspline = interpolate.make_interp_spline(val_dict['car_distance'], val_dict['dt'] , k=k)
+    bspline = interpolate.make_interp_spline(val_dict['dt'], val_dict['car_distance'], k=k)
     if isinstance(dist, list):
         return [bspline(elem) for elem in dist]
     else:
         return bspline(dist)
 
 
-def test_different_weights(min_w=2, max_w=33, steps=35, *args, **kwargs):
-
-    weight_results = {
-        'car_mass' : [],
-        'results_8' : [],
-        'results_16' : []
-    }
+def test_different_weights(min_w, max_w, steps, *args, **kwargs):
 
     for w in np.linspace(min_w, max_w, steps):
+        chem_car = ChemCarModel(car_mass_total=w, *args, **kwargs)
 
-        print('test mass:', w)
-
-        chem_car = ChemCarModel(car_mass_total=w, additional_mass_factor=0.0, *args, **kwargs)
-        w_results = chem_car.test_motor()
-        total_time_8, total_time_16 = time_from_dist([8, 16], w_results)
-
-        weight_results['car_mass'].append(w)
-        weight_results['results_8'].append(total_time_8)
-        weight_results['results_16'].append(total_time_16)
-
-    return weight_results
 
 
 def main():
 
-    weight_results = test_different_weights()
-    print(weight_results['car_mass'])
-    print(weight_results['results_8'])
-    print(weight_results['results_16'])
-    plt.plot(weight_results['car_mass'], weight_results['results_8'])
-    plt.plot(weight_results['car_mass'], weight_results['results_16'])
-    plt.show()
+    chem_car = ChemCarModel(
+        car_mass_total = 10,
+        alpha = 0.5,
+        additional_mass_factor = 0.3,
+        back_wheel_radius = 0.1,
+        back_wheel_mass = 0.5,
+        front_wheel_radius = 0.1,
+        front_wheel_mass = None,
+        wheelbase = 0.465,
+        back_axis_mass_dist = 0.5,
+        roll_friction = 0.01,
+        translation = 3,
+        cw = 0.3,
+        car_surface = 0.1,
+        rho_air = 1.1839,
+        k = 3,
+        max_axis_moment = 9999,
+        motor_moment = 0.3
+    )
     #chem_car = ChemCarModel()
-    #vals = chem_car.test_motor()
-    #plot_results(vals)
+    vals = chem_car.test_motor()
+    plot_results(vals)
 
 if __name__ == '__main__':
     main()
