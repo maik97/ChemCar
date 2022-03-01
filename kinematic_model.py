@@ -11,11 +11,11 @@ class ChemCarModel:
             car_mass_total=10,
             alpha=0.5,
             additional_mass_factor=0.3,
-            back_wheel_radius=0.1,
+            back_wheel_radius=0.075,
             back_wheel_mass=0.5,
-            front_wheel_radius=0.1,
+            front_wheel_radius=0.075,
             front_wheel_mass=None,
-            wheelbase=0.465,
+            wheelbase=0.25,
             back_axis_mass_dist=0.5,
             roll_friction=0.01,
             translation=1,
@@ -24,8 +24,8 @@ class ChemCarModel:
             rho_air=1.1839,
             k=3,
             max_axis_moment=9999,
-            motor_moment=0.3,
-            motor_rpm=55,
+            motor_moment=0.392,
+            motor_rpm=50,
     ) -> None:
 
         car_mass = car_mass_total * (1 + additional_mass_factor)
