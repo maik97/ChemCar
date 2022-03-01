@@ -132,7 +132,7 @@ def make_plot(x, y, xlabel, ylabel, title, path=None, fn='no_name'):
 
 
 def plot_results(val_dict, path=None):
-    a_mom = np.array(val_dict['axis_moment'])/1000
+    a_mom = np.array(val_dict['axis_moment'])*1000
     make_plot(val_dict['dt'], a_mom, "t in Sek", "M(t) in mNm", "Moment Hinterachse", path, fn='ax_mom')
     make_plot(val_dict['dt'], val_dict['car_acc'], "t in Sek", "a(t) in m/(s^2)", "Beschleunigung", path, fn='acc')
     make_plot(val_dict['dt'], val_dict['car_velocity'], "t in Sek", "v(t) in m/s", "Geschwindigkeit", path, fn='vel')
