@@ -27,6 +27,29 @@ class ChemCarModel:
             motor_moment=0.392,
             motor_rpm=50,
     ) -> None:
+        """
+        Motor:
+        https://www.reichelt.de/de/de/getriebemotor-66-3-mm-1-100-6-v-dc-gm66-3-6v-2-p270439.html?PROVID=2788&gclid=CjwKCAiApfeQBhAUEiwA7K_UHxUKspgjUi6MpxiKLCf33cVkxrLSjlAavW2S4wSYhpG7Lv3m6DJ_ExoCwMgQAvD_BwE&&r=1
+
+        :param car_mass_total:
+        :param alpha:
+        :param additional_mass_factor:
+        :param back_wheel_radius:
+        :param back_wheel_mass:
+        :param front_wheel_radius:
+        :param front_wheel_mass:
+        :param wheelbase:
+        :param back_axis_mass_dist:
+        :param roll_friction:
+        :param translation:
+        :param cw:
+        :param car_surface:
+        :param rho_air:
+        :param k:
+        :param max_axis_moment:
+        :param motor_moment:
+        :param motor_rpm:
+        """
 
         car_mass = car_mass_total * (1 + additional_mass_factor)
 
