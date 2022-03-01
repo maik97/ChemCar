@@ -119,16 +119,24 @@ class ChemCarModel:
         return self.values
 
 
-def plot_results(val_dict):
-    print(len(val_dict['dt']))
-    plt.plot(val_dict['dt'], val_dict['axis_moment'])
-    plt.show()
-    plt.plot(val_dict['dt'], val_dict['car_acc'])
-    plt.show()
-    plt.plot(val_dict['dt'], val_dict['car_velocity'])
-    plt.show()
-    plt.plot(val_dict['dt'], val_dict['car_distance'])
-    plt.show()
+def make_plot(x, y, xlabel, ylabel, title, path=None, fn='no_name'):
+    plt.plot(x, y)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    if path is None:
+        plt.show()
+    else:
+        plt.savefig(path+"/"+fn+".svg")
+    plt.clf()
+
+
+def plot_results(val_dict, path=None):
+    a_mom = np.array(val_dict['axis_moment'])/1000
+    make_plot(val_dict['dt'], a_mom, "t in Sek", "M(t) in mNm", "Moment Hinterachse", path, fn='ax_mom')
+    make_plot(val_dict['dt'], val_dict['car_acc'], "t in Sek", "a(t) in m/(s^2)", "Beschleunigung", path, fn='acc')
+    make_plot(val_dict['dt'], val_dict['car_velocity'], "t in Sek", "v(t) in m/s", "Geschwindigkeit", path, fn='vel')
+    make_plot(val_dict['dt'], val_dict['car_distance'], "t in Sek", "x(t) in m", "Strecke", path, fn='dist')
 
 
 def time_from_dist(dist, val_dict, k=1):
@@ -164,16 +172,25 @@ def test_different_weights(min_w=2, max_w=33, steps=35, *args, **kwargs):
 
 def main():
 
-    weight_results = test_different_weights()
-    print(weight_results['car_mass'])
-    print(weight_results['results_8'])
-    print(weight_results['results_16'])
-    plt.plot(weight_results['car_mass'], weight_results['results_8'])
-    plt.plot(weight_results['car_mass'], weight_results['results_16'])
-    plt.show()
-    #chem_car = ChemCarModel()
-    #vals = chem_car.test_motor()
-    #plot_results(vals)
+    path = 'results'
+
+    w_r = test_different_weights()
+
+    make_plot(w_r['car_mass'], w_r['results_8'],
+              "Gewicht in kg", "Zeit in s",
+              "Benötigte Zeit bis 8 Meter",
+              path=path, fn="mass_8m"
+              )
+
+    make_plot(w_r['car_mass'], w_r['results_16'],
+              "Gewicht in kg", "Zeit in s",
+              "Benötigte Zeit bis 16 Meter",
+              path=path, fn="mass_16m"
+              )
+
+    chem_car = ChemCarModel()
+    vals = chem_car.test_motor()
+    plot_results(vals, path=path)
 
 if __name__ == '__main__':
     main()
